@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: "django_app"
+    build: "/app"
+    ports:
+      - 8000:8000
+    volumes:
+      - ./app:/app
+    command: >
+      sh -c "python3 manage.py makemigrations user --noinput &&
+             python3 manage.py makemigrations api --noinput &&
+             while ! python3 manage.py migrate --noinput ; do sleep 1 ; done && 
+             python3 manage.py createsuperuser --user admin --noinput --email admin@admin.com --noinput ;
+             python3 manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASS=postgresqlpassword
+    env_file:
+      - ./app/.env
+  
+  db:
+    image: postgres:latest
+    container_name: db
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgresqlpassword
