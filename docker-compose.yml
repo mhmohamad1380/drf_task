@@ -21,8 +21,8 @@ services:
       - DB_NAME=app
       - DB_USER=postgres
       - DB_PASS=postgresqlpassword
-    env_file:
-      - ./app/.env
+      - EMAIL_HOST_USER=testingappdjango@gmail.com
+      - EMAIL_HOST_PASSWORD=cbhivanevmjrhlbm
   
   db:
     image: postgres:latest
